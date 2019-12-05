@@ -1,6 +1,5 @@
 #ifndef LIST_H
 #define LIST_H
-#include "node.h"
 
 template <typename T>
 class list {
@@ -8,9 +7,20 @@ public:
   list<T>();
   ~list<T>();
 
-  void insert(node<T>*);
-  void remove(node<T>*);
-  node<T>* search(T*);
+  class node;
+  void insert(node*);
+  void remove(node*);
+  node* search(T*);
+
+  class node {
+  public:
+    node();
+    node(T* key);
+    ~node();
+    node* next = nullptr;
+    node* prev = nullptr;
+    T* key = nullptr;
+  };
 
   class iterator;
   iterator begin();
@@ -19,19 +29,19 @@ public:
   class iterator {
   public:
     iterator(list<T>&);
-    iterator(list<T>&, node<T>*);
+    iterator(list<T>&, node*);
     iterator& operator++();
     iterator& operator++(int);
     bool operator!=(const iterator&) const;
     T& operator*() const;
 
   private:
-    node<T>* curr;
+    node* curr;
     list<T>& l;
   };
 
-// private:
-  node<T>* const nil;
+private:
+  node* const nil;
 };
 
 #include "list.tpp"

@@ -1,5 +1,5 @@
 template <typename T>
-list<T>::list() : nil{new node<T>()}
+list<T>::list() : nil{new node()}
 {
   nil->next = nil;
   nil->prev = nil;
@@ -9,7 +9,7 @@ list<T>::list() : nil{new node<T>()}
 template <typename T>
 list<T>::~list()
 {
-  node<T>* curr = nil->next;
+  node* curr = nil->next;
   while (curr != nil) {
     curr = curr->next;
     delete curr->prev;
@@ -19,7 +19,22 @@ list<T>::~list()
 
 
 template <typename T>
-void list<T>::insert(node<T>* x)
+list<T>::node::node(T* key) : key{key} {}
+
+
+template <typename T>
+list<T>::node::node() {}
+
+
+template <typename T>
+list<T>::node::~node()
+{
+  delete key;
+}
+
+
+template <typename T>
+void list<T>::insert(node* x)
 {
   x->next = nil->next;
   nil->next->prev = x;
@@ -29,7 +44,7 @@ void list<T>::insert(node<T>* x)
 
 
 template <typename T>
-void list<T>::remove(node<T>* x)
+void list<T>::remove(node* x)
 {
   x->prev->next = x->next;
   x->next->prev = x->prev;
@@ -38,9 +53,9 @@ void list<T>::remove(node<T>* x)
 
 
 template <typename T>
-node<T>* list<T>::search(T* key)
+typename list<T>::node* list<T>::search(T* key)
 {
-  node<T>* curr = nil->next;
+  node* curr = nil->next;
   while (curr != nil && curr->key != key) {
     curr = curr->next;
   }
@@ -67,7 +82,7 @@ list<T>::iterator::iterator(list<T>& l) : curr{l.nil->next}, l{l} {}
 
 
 template <typename T>
-list<T>::iterator::iterator(list<T>& l, node<T>* x) : curr{x}, l{l} {}
+list<T>::iterator::iterator(list<T>& l, node* x) : curr{x}, l{l} {}
 
 
 template <typename T>
