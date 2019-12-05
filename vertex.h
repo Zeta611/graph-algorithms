@@ -4,8 +4,10 @@
 
 class vertex {
 public:
+  vertex(int);
+  int key;
   enum class color { WHITE, GRAY, BLACK };
-  color col;
+  color col = color::WHITE;
   int dist = INT_MAX;
   vertex* parent = nullptr;
 };
