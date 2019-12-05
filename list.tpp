@@ -19,7 +19,7 @@ list<T>::~list()
 
 
 template <typename T>
-list<T>::node::node(T* key) : key{key} {}
+list<T>::node::node(T* const key) : key{key} {}
 
 
 template <typename T>
@@ -27,15 +27,9 @@ list<T>::node::node() {}
 
 
 template <typename T>
-list<T>::node::~node()
+void list<T>::insert(T* const key)
 {
-  delete key;
-}
-
-
-template <typename T>
-void list<T>::insert(node* x)
-{
+  auto x = new node(key);
   x->next = nil->next;
   nil->next->prev = x;
   nil->next = x;
@@ -44,8 +38,9 @@ void list<T>::insert(node* x)
 
 
 template <typename T>
-void list<T>::remove(node* x)
+void list<T>::remove(T* const key)
 {
+  auto x = search(key);
   x->prev->next = x->next;
   x->next->prev = x->prev;
   delete x;
@@ -53,7 +48,7 @@ void list<T>::remove(node* x)
 
 
 template <typename T>
-typename list<T>::node* list<T>::search(T* key)
+typename list<T>::node* list<T>::search(T* const key)
 {
   node* curr = nil->next;
   while (curr != nil && curr->key != key) {

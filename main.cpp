@@ -1,16 +1,40 @@
 #include <iostream>
-#include "list.h"
+#include "graph.h"
 
 int main(void)
 {
   // TEST
-  auto l = list<int>();
-  l.insert(new list<int>::node(new int(3)));
-  l.insert(new list<int>::node(new int(5)));
-  l.insert(new list<int>::node(new int(7)));
-  l.insert(new list<int>::node(new int(9)));
-  for (auto e : l) {
-    std::cout << e << std::endl;
-  }
+  int pairs[] = {
+    4, 0, 1,
+    8, 0, 7,
+    4, 1, 0,
+    8, 1, 2,
+    11, 1, 7,
+    8, 2, 1,
+    7, 2, 3,
+    4, 2, 5,
+    2, 2, 8,
+    7, 3, 2,
+    9, 3, 4,
+    14, 3, 5,
+    9, 4, 3,
+    10, 4, 5,
+    4, 5, 2,
+    14, 5, 3,
+    10, 5, 4,
+    2, 5, 6,
+    2, 6, 5,
+    1, 6, 7,
+    6, 6, 8,
+    8, 7, 0,
+    11, 7, 1,
+    1, 7, 6,
+    7, 7, 8,
+    2, 8, 2,
+    6, 8, 6,
+    7, 8, 7
+  };
+  graph g(9, 28, pairs);
+  std::cout << g;
   return 0;
 }

@@ -7,24 +7,20 @@ public:
   list<T>();
   ~list<T>();
 
-  class node;
-  void insert(node*);
-  void remove(node*);
-  node* search(T*);
-
-  class node {
-  public:
-    node();
-    node(T* key);
-    ~node();
-    node* next = nullptr;
-    node* prev = nullptr;
-    T* key = nullptr;
-  };
+  void insert(T* const);
+  void remove(T* const);
 
   class iterator;
   iterator begin();
   iterator end();
+
+  struct node {
+    node();
+    node(T* const key);
+    node* next = nullptr;
+    node* prev = nullptr;
+    T* const key = nullptr;
+  };
 
   class iterator {
   public:
@@ -42,6 +38,7 @@ public:
 
 private:
   node* const nil;
+  node* search(T* const);
 };
 
 #include "list.tpp"
