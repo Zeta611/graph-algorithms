@@ -96,6 +96,46 @@ void graph::bfs(int s)
 }
 
 
+void graph::dfs()
+{
+  for (int i = 0; i < vcnt; ++i) {
+    auto u = vertices[i];
+    u->col = vertex::color::WHITE;
+    u->parent = nullptr;
+  }
+
+  int time = 0;
+  for (int i = 0; i < vcnt; ++i) {
+    auto u = vertices[i];
+    if (u->col == vertex::color::WHITE) {
+      dfs_visit(u, time);
+    }
+  }
+  std::cout << "\b\n";
+}
+
+
+void graph::dfs_visit(vertex* u, int& time)
+{
+  std::cout << u->key << " ";
+  ++time;
+  u->discov = time;
+  u->col = vertex::color::GRAY;
+
+  for (const pair<vertex*, int>& p : *adj[u->key]) {
+    vertex* const v = p.fst;
+    if (v->col == vertex::color::WHITE) {
+      v->parent = u;
+      dfs_visit(v, time);
+    }
+  }
+
+  u->col = vertex::color::BLACK;
+  ++time;
+  u->finish = time;
+}
+
+
 graph::vertex::vertex(int key) : key{key} {}
 
 

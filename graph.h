@@ -11,7 +11,7 @@ public:
   ~graph();
 
   void bfs(int);
-  void dfs(int);
+  void dfs();
 
   friend std::ostream& operator<<(std::ostream&, const graph&);
 
@@ -22,12 +22,16 @@ private:
   typedef pair<vertex*, int> vwpair;
   list<vwpair>** adj;
 
+  void dfs_visit(vertex*, int&);
+
   struct vertex {
     vertex(int);
     int key;
     enum class color { WHITE, GRAY, BLACK };
     color col = color::WHITE;
     int dist = INT_MAX;
+    int discov = INT_MAX;
+    int finish = INT_MAX;
     vertex* parent = nullptr;
   };
 

@@ -20,10 +20,13 @@ int main(void)
     6, 8, 6,
     7, 8, 7
   };
-  graph g(true, 9, 14, pairs);
+  graph g(false, 9, 14, pairs);
   std::cout << "Graph Input:\n" << g << "\n";
 
-  int src = 3;
-  std::cout << "BFS from source " << src << ": ";
+  int src = 8;
+  std::cout << "BFS from " << src << ": ";
   g.bfs(src);
+
+  std::cout << "DFS: ";
+  g.dfs();
 }
