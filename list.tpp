@@ -48,6 +48,13 @@ void list<T>::remove(T* const key)
 
 
 template <typename T>
+bool list<T>::is_empty()
+{
+  return nil->next == nil;
+}
+
+
+template <typename T>
 typename list<T>::node* list<T>::search(T* const key)
 {
   node* curr = nil->next;

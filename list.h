@@ -10,6 +10,8 @@ public:
   void insert(T* const);
   void remove(T* const);
 
+  bool is_empty();
+
   class iterator;
   iterator begin();
   iterator end();
@@ -36,8 +38,10 @@ public:
     list<T>& l;
   };
 
-private:
+protected:
   node* const nil;
+
+private:
   node* search(T* const);
 };
 

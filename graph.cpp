@@ -1,11 +1,14 @@
 #include <iostream>
+#include <climits>
 #include "graph.h"
 #include "list.h"
 #include "pair.h"
+#include "queue.h"
 
-graph::graph(int vcnt, int ecnt, int* const ewpairs)
+graph::graph(bool directed, int vcnt, int ecnt, int* const ewpairs)
   : adj{new list<vwpair>*[vcnt]},
-    pairs{new vwpair*[ecnt]},
+    pairs{new vwpair*[directed ? ecnt : 2 * ecnt]},
+    directed{directed},
     vcnt{vcnt},
     ecnt{ecnt}
 {
@@ -20,9 +23,16 @@ graph::graph(int vcnt, int ecnt, int* const ewpairs)
     int w = ewpairs[3 * i];
     int u = ewpairs[3 * i + 1];
     int v = ewpairs[3 * i + 2];
+
     auto p = new vwpair(vertices[v], w);
     pairs[i] = p;
     adj[u]->insert(p);
+
+    if (!directed) {
+      auto q = new vwpair(vertices[u], w);
+      pairs[i + ecnt] = q;
+      adj[v]->insert(q);
+    }
   }
 }
 
@@ -36,6 +46,7 @@ graph::~graph()
 
   for (int i = 0; i < ecnt; ++i) {
     delete pairs[i];
+    if (!directed) { delete pairs[i + ecnt]; }
   }
   delete[] pairs;
 
@@ -46,6 +57,45 @@ graph::~graph()
 }
 
 
+void graph::bfs(int s)
+{
+  vertex* const src = vertices[s];
+
+  for (int i = 0; i < vcnt; ++i) {
+    auto u = vertices[i];
+    if (u == src) { continue; }
+    u->col = vertex::color::WHITE;
+    u->dist = INT_MAX;
+    u->parent = nullptr;
+  }
+
+  src->col = vertex::color::GRAY;
+  src->dist = 0;
+  src->parent = nullptr;
+
+  queue<vertex> q;
+  q.enqueue(src);
+
+  while (!q.is_empty()) {
+    vertex* const u = q.dequeue();
+
+    for (const pair<vertex*, int>& p : *adj[u->key]) {
+      vertex* const v = p.fst;
+      if (v->col == vertex::color::WHITE) {
+        v->col = vertex::color::GRAY;
+        v->dist = u->dist + 1;
+        v->parent = u;
+        q.enqueue(v);
+      }
+    }
+
+    u->col = vertex::color::BLACK;
+    std::cout << u->key << " ";
+  }
+  std::cout << "\b\n";
+}
+
+
 graph::vertex::vertex(int key) : key{key} {}
 
 
@@ -53,8 +103,8 @@ std::ostream& operator<<(std::ostream& stream, const graph& g)
 {
   for (int i = 0; i < g.vcnt; ++i) {
     stream << i;
-    for (auto e : *g.adj[i]) {
-      stream << " -> (" << e.fst->key << ", " << e.snd << ")";
+    for (const pair<graph::vertex*, int>& e : *g.adj[i]) {
+      stream << " → (" << e.fst->key << ", w=" << e.snd << ")";
     }
     stream << "\n";
   }

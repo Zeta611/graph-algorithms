@@ -7,9 +7,15 @@
 
 class graph {
 public:
-  graph(int, int, int* const);
+  graph(bool, int, int, int* const);
   ~graph();
 
+  void bfs(int);
+  void dfs(int);
+
+  friend std::ostream& operator<<(std::ostream&, const graph&);
+
+private:
   struct vertex;
   vertex** vertices;
 
@@ -25,10 +31,8 @@ public:
     vertex* parent = nullptr;
   };
 
-  friend std::ostream& operator<<(std::ostream&, const graph&);
-
-private:
   vwpair** pairs;
+  bool directed;
   int vcnt;
   int ecnt;
 };
