@@ -168,6 +168,11 @@ int main(int argc, char *argv[])
       g.bfs(src);
       break;
 
+    case 3:
+      std::cout << "MST:\n";
+      g.mst_prim();
+      break;
+
     default: return EXIT_FAILURE;
   }
 

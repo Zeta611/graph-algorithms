@@ -140,6 +140,68 @@ void graph::dfs_visit(vertex* u, int& time)
 }
 
 
+void graph::mst_prim()
+{
+  mst_prim(0);
+}
+
+
+void graph::mst_prim(int r)
+{
+  if (vcnt == 0) { return; }
+  vertex* const root = vertices[r];
+
+  for (int i = 0; i < vcnt; ++i) {
+    auto u = vertices[i];
+    u->wkey = INT_MAX;
+    u->parent = nullptr;
+  }
+
+  root->wkey = 0;
+  vertex** q = new vertex*[vcnt];
+  for (int i = 0; i < vcnt; ++i) {
+    q[i] = vertices[i];
+  }
+
+  for (int qcnt = 0; qcnt < vcnt; ++qcnt) {
+    int min_i;
+    vertex* u = nullptr;
+
+    // Extract-Min
+    for (int i = 0; i < vcnt; ++i) {
+      auto curr = q[i];
+      if (u == nullptr || (curr != nullptr && u->wkey > curr->wkey)) {
+        u = curr;
+        min_i = i;
+      }
+    }
+    q[min_i] = nullptr;
+
+    for (const pair<vertex*, int>& p : *adj[u->key]) {
+      vertex* const v = p.fst;
+      const int w = p.snd;
+
+      bool v_in_q {false};
+      for (int i = 0; i < vcnt; ++i) {
+        auto curr = q[i];
+        if (curr == v) {
+          v_in_q = true;
+          break;
+        }
+      }
+
+      if (v_in_q && w < v->wkey) {
+        v->parent = u;
+        v->wkey = w;
+      }
+    }
+  }
+
+  delete[] q;
+  print_parents();
+}
+
+
 void graph::print_parents()
 {
   std::cout << "Vertex: Parent\n";

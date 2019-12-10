@@ -12,6 +12,8 @@ public:
 
   void bfs(int);
   void dfs();
+  void mst_prim();
+  void mst_prim(int);
 
   friend std::ostream& operator<<(std::ostream&, const graph&);
 
@@ -34,6 +36,7 @@ private:
     int dist = INT_MAX;
     int discov = INT_MAX;
     int finish = INT_MAX;
+    int wkey = INT_MAX;
     vertex* parent = nullptr;
   };
 
