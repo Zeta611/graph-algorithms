@@ -76,6 +76,7 @@ void graph::bfs(int s)
   queue<vertex> q;
   q.enqueue(src);
 
+  std::cout << "Visit order: ";
   while (!q.is_empty()) {
     vertex* const u = q.dequeue();
 
@@ -93,6 +94,7 @@ void graph::bfs(int s)
     std::cout << u->key << " ";
   }
   std::cout << "\b\n";
+  print_parents();
 }
 
 
@@ -104,6 +106,7 @@ void graph::dfs()
     u->parent = nullptr;
   }
 
+  std::cout << "Visit order: ";
   int time = 0;
   for (int i = 0; i < vcnt; ++i) {
     auto u = vertices[i];
@@ -112,6 +115,7 @@ void graph::dfs()
     }
   }
   std::cout << "\b\n";
+  print_parents();
 }
 
 
@@ -133,6 +137,22 @@ void graph::dfs_visit(vertex* u, int& time)
   u->col = vertex::color::BLACK;
   ++time;
   u->finish = time;
+}
+
+
+void graph::print_parents()
+{
+  std::cout << "Vertex: Parent\n";
+  for (int i = 0; i < vcnt; ++i) {
+    auto u = vertices[i];
+    std::cout << u->key << ": ";
+    auto p = u->parent;
+    if (p) {
+      std::cout << p->key << "\n";
+    } else {
+      std::cout << "nil\n";
+    }
+  }
 }
 
 

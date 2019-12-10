@@ -24,6 +24,8 @@ private:
 
   void dfs_visit(vertex*, int&);
 
+  void print_parents();
+
   struct vertex {
     vertex(int);
     int key;

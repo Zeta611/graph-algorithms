@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 
   switch (prob_no) {
     case 1:
-      std::cout << "DFS: ";
+      std::cout << "DFS:\n";
       g.dfs();
       break;
 
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
       int src;
       std::cout << "Enter source vertex: ";
       std::cin >> src;
-      std::cout << "BFS from " << src << ": ";
+      std::cout << "BFS from " << src << ":\n";
       g.bfs(src);
       break;
 
