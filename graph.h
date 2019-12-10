@@ -10,10 +10,11 @@ public:
   graph(bool, int, int, int* const);
   ~graph();
 
-  void bfs(int);
+  void bfs(const int);
   void dfs();
   void mst_prim();
-  void mst_prim(int);
+  void mst_prim(const int);
+  void shortest_dijkstra(const int);
 
   friend std::ostream& operator<<(std::ostream&, const graph&);
 
@@ -24,9 +25,12 @@ private:
   typedef pair<vertex*, int> vwpair;
   list<vwpair>** adj;
 
+  void initialize();
   void dfs_visit(vertex*, int&);
+  vertex* extract_min(vertex**, bool);
 
   void print_parents();
+  void print_dists();
 
   struct vertex {
     vertex(int);

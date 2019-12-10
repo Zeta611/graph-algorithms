@@ -13,7 +13,10 @@ void print_help()
                "Options:\n"
                "  -p, --problem <NUM>\n"
                "  -u, --undirected\n"
-               "  -h, --help\n";
+               "  -h, --help\n"
+               "Note that MST is set to undirected graph and "
+               "Dijkstra's algorithm is set to directed graph regardless of"
+               "a presence of the -u flag";
 }
 
 
@@ -100,26 +103,26 @@ int main(int argc, char *argv[])
 
     if (ch == -1) { break; }
     switch (ch) {
-      case 'h':
-        print_help();
-        return 0;
+    case 'h':
+      print_help();
+      return 0;
 
-      case 'p': {
-          found_problem_op = true;
-          char* tmp;
-          prob_no = std::strtoul(optarg, &tmp, 10);
-          if (!(optarg != tmp && *tmp == '\0' && prob_no <= 4)) {
-            std::cerr << "Problem number should be either 1, 2, 3, or 4\n";
-            return EXIT_FAILURE;
-          }
+    case 'p': {
+        found_problem_op = true;
+        char* tmp;
+        prob_no = std::strtoul(optarg, &tmp, 10);
+        if (!(optarg != tmp && *tmp == '\0' && prob_no <= 4)) {
+          std::cerr << "Problem number should be either 1, 2, 3, or 4\n";
+          return EXIT_FAILURE;
         }
-        break;
+      }
+      break;
 
-      case 'u':
-        directed = false;
-        break;
+    case 'u':
+      directed = false;
+      break;
 
-      default: return EXIT_FAILURE;
+    default: return EXIT_FAILURE;
     }
   }
 
@@ -150,30 +153,48 @@ int main(int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
-  graph g(directed, v, e, pairs);
-  std::cout << "Graph Input:\n" << g
-            << "\n====== Problem " << prob_no << " ======\n";
+  std::cout << "====== Problem " << prob_no << " ======\n";
 
   switch (prob_no) {
-    case 1:
-      std::cout << "DFS:\n";
-      g.dfs();
-      break;
+  case 1: {
+    std::cout << "DFS:\n";
+    graph g(directed, v, e, pairs);
+    std::cout << "\nInput graph:\n" << g << "\n";
+    g.dfs();
+  }
+    break;
 
-    case 2:
-      int src;
-      std::cout << "Enter source vertex: ";
-      std::cin >> src;
-      std::cout << "BFS from " << src << ":\n";
-      g.bfs(src);
-      break;
+  case 2: {
+    int src;
+    std::cout << "Enter source vertex: ";
+    std::cin >> src;
+    std::cout << "\nBFS from " << src << ":\n";
+    graph g(directed, v, e, pairs);
+    std::cout << "\nInput graph:\n" << g << "\n";
+    g.bfs(src);
+  }
+    break;
 
-    case 3:
-      std::cout << "MST:\n";
-      g.mst_prim();
-      break;
+  case 3: {
+    std::cout << "MST:\n";
+    graph g(false, v, e, pairs);
+    std::cout << "\nInput graph:\n" << g << "\n";
+    g.mst_prim();
+  }
+    break;
 
-    default: return EXIT_FAILURE;
+  case 4: {
+    int src;
+    std::cout << "Enter source vertex: ";
+    std::cin >> src;
+    std::cout << "\nShortest path from " << src << ":\n";
+    graph g(true, v, e, pairs);
+    std::cout << "\nInput graph:\n" << g << "\n";
+    g.shortest_dijkstra(src);
+  }
+    break;
+
+  default: return EXIT_FAILURE;
   }
 
   delete[] pairs;

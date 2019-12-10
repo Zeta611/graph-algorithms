@@ -61,17 +61,9 @@ void graph::bfs(int s)
 {
   vertex* const src = vertices[s];
 
-  for (int i = 0; i < vcnt; ++i) {
-    auto u = vertices[i];
-    if (u == src) { continue; }
-    u->col = vertex::color::WHITE;
-    u->dist = INT_MAX;
-    u->parent = nullptr;
-  }
-
+  initialize();
   src->col = vertex::color::GRAY;
   src->dist = 0;
-  src->parent = nullptr;
 
   queue<vertex> q;
   q.enqueue(src);
@@ -93,18 +85,14 @@ void graph::bfs(int s)
     u->col = vertex::color::BLACK;
     std::cout << u->key << " ";
   }
-  std::cout << "\b\n";
+  std::cout << "\b\n\n";
   print_parents();
 }
 
 
 void graph::dfs()
 {
-  for (int i = 0; i < vcnt; ++i) {
-    auto u = vertices[i];
-    u->col = vertex::color::WHITE;
-    u->parent = nullptr;
-  }
+  initialize();
 
   std::cout << "Visit order: ";
   int time = 0;
@@ -114,7 +102,7 @@ void graph::dfs()
       dfs_visit(u, time);
     }
   }
-  std::cout << "\b\n";
+  std::cout << "\b\n\n";
   print_parents();
 }
 
@@ -151,31 +139,16 @@ void graph::mst_prim(int r)
   if (vcnt == 0) { return; }
   vertex* const root = vertices[r];
 
-  for (int i = 0; i < vcnt; ++i) {
-    auto u = vertices[i];
-    u->wkey = INT_MAX;
-    u->parent = nullptr;
-  }
-
+  initialize();
   root->wkey = 0;
+
   vertex** q = new vertex*[vcnt];
   for (int i = 0; i < vcnt; ++i) {
     q[i] = vertices[i];
   }
 
   for (int qcnt = 0; qcnt < vcnt; ++qcnt) {
-    int min_i;
-    vertex* u = nullptr;
-
-    // Extract-Min
-    for (int i = 0; i < vcnt; ++i) {
-      auto curr = q[i];
-      if (u == nullptr || (curr != nullptr && u->wkey > curr->wkey)) {
-        u = curr;
-        min_i = i;
-      }
-    }
-    q[min_i] = nullptr;
+    vertex* u = extract_min(q, false);
 
     for (const pair<vertex*, int>& p : *adj[u->key]) {
       vertex* const v = p.fst;
@@ -202,6 +175,63 @@ void graph::mst_prim(int r)
 }
 
 
+void graph::shortest_dijkstra(const int s)
+{
+  vertex* const src = vertices[s];
+
+  initialize();
+  src->dist = 0;
+
+  vertex** q = new vertex*[vcnt];
+  for (int i = 0; i < vcnt; ++i) {
+    q[i] = vertices[i];
+  }
+
+  for (int qcnt = 0; qcnt < vcnt; ++qcnt) {
+    vertex* u = extract_min(q, true);
+    for (const pair<vertex*, int>& p : *adj[u->key]) {
+      vertex* const v = p.fst;
+      const int w = p.snd;
+
+      // Relax
+      if (v->dist > u->dist + w) {
+        v->dist = u->dist + w;
+        v->parent = u;
+      }
+    }
+  }
+
+  delete[] q;
+  print_parents();
+  std::cout << "\n";
+  print_dists();
+}
+
+
+graph::vertex* graph::extract_min(vertex** q, bool dist_wkey)
+{
+  vertex* u = nullptr;
+  int min_i;
+
+  for (int i = 0; i < vcnt; ++i) {
+    auto curr = q[i];
+    if (dist_wkey) {
+      if (u == nullptr || (curr != nullptr && u->dist > curr->dist)) {
+        u = curr;
+        min_i = i;
+      }
+    } else {
+      if (u == nullptr || (curr != nullptr && u->wkey > curr->wkey)) {
+        u = curr;
+        min_i = i;
+      }
+    }
+  }
+  q[min_i] = nullptr;
+  return u;
+}
+
+
 void graph::print_parents()
 {
   std::cout << "Vertex: Parent\n";
@@ -214,6 +244,30 @@ void graph::print_parents()
     } else {
       std::cout << "nil\n";
     }
+  }
+}
+
+
+void graph::print_dists()
+{
+  std::cout << "Vertex: Distance\n";
+  for (int i = 0; i < vcnt; ++i) {
+    auto u = vertices[i];
+    std::cout << u->key << ": " << u->dist << "\n";
+  }
+}
+
+
+void graph::initialize()
+{
+  for (int i = 0; i < vcnt; ++i) {
+    auto u = vertices[i];
+    u->col = vertex::color::WHITE;
+    u->dist = INT_MAX;
+    u->discov = INT_MAX;
+    u->finish = INT_MAX;
+    u->wkey = INT_MAX;
+    u->parent = nullptr;
   }
 }
 
